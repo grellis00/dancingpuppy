@@ -1,9 +1,9 @@
-###########################
-Filename: dancingpuppy.pl
-Developer: Geoff Ellis
-Version: 0.01a
-Args: domain ipaddr
-###########################
+##
+## Filename: dancingpuppy.pl
+## Developer: Geoff Ellis
+## Version: 0.01a
+## Args: domain ipaddr
+##
 
 use NetPacket::Ethernet qw(:strip);
 use NetPacket::IP;
